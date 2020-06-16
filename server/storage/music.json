@@ -1,0 +1,26 @@
+[
+  {
+    "uuid" : "6d878652-5b5b-4d93-a7f0-e3ac3eeb25dd",
+    "artist_id" : 1,
+    "title" : "Delacruz - Medley Acústico (ONErpm Sessions)",
+    "youtube" : "https://www.youtube.com/watch?v=6Ir9AtNasaY",
+    "likes" : 0,
+    "deleted_at" : ""
+  },
+  {
+    "uuid" : "d027df7b-b313-4fdb-9d90-74a352884685",
+    "artist_id" : 2,
+    "title" : "Cesar MC - Canção Infantil part. Cristal",
+    "youtube" : "https://www.youtube.com/watch?v=Ri-eF5PJ2X0",
+    "likes" : 0,
+    "deleted_at" : ""
+  },
+  {
+    "uuid" : "4f4393ae-4f88-4b66-a8b5-bbb337b49874",
+    "artist_id" : 3,
+    "title" : "Projota - O Homem Que Não Tinha Nada (Part. Negra Li)",
+    "youtube" : "https://www.youtube.com/watch?v=7m0kmGKX8o8",
+    "likes" : 0,
+    "deleted_at" : ""
+  }
+]
