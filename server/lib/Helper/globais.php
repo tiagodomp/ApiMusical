@@ -94,7 +94,7 @@ if(!function_exists('base_path')){
 
 if(!function_exists('path_file')){
     function path_file($path, $file){
-        $path = strStart($path, base_path())? $path : base_path() . $path;
+        $path = strStart($path, base_path());
 
         if(!empty($file))
             return is_file($path.$file)?$path.$file:'';

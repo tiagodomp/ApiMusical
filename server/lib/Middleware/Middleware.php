@@ -8,21 +8,31 @@ use Lib\Http\Request;
 
 abstract class Middleware
 {
-
     /**
      * @array \config\middleware
      */
     protected $middlewares;
 
+    /**
+     * @array middlewares instancied
+     */
     public $use;
 
     /**
-     * Middleware constructor.
-     * @param mixed ...$params
+     * RouteMiddleware constructor.
+     * @param array $namesMidd
      */
-    public function __construct(...$params)
+    public function __construct($type, $namesMidd)
     {
+        $middlewares = require_once config_path('middleware.php')?:[];
 
+        if(!empty($middlewares[$type])){
+            $this->middlewares = $middlewares[$type];
+
+            foreach ((array)$namesMidd as $name)
+                if (isset($this->middlewares[$name]))
+                    $this->use[$name] = $this->middlewares[$name];
+        }
     }
 
     /**
@@ -30,8 +40,20 @@ abstract class Middleware
      * @param Closure $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle()
     {
+        $data = $this->use;
+        foreach ( $data as $name => $class )
+            if(method_exists($class, 'handle')) {
+                $interface = $this->getInterface($class);
+                $this->use[$name] = (new $class($interface))->handle();
+            }
+    }
 
+    private function getInterface($class)
+    {
+        $interface = $class . 'Interface';
+        if (is_callable($interface))
+            return $interface;
     }
 }

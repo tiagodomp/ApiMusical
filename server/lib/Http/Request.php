@@ -28,12 +28,20 @@ class Request
     private $middlewares;
 
     /**
+     *  errors of request
+     *  @var array
+     */
+    private $errors;
+
+    /**
      * Request constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->request = ($_REQUEST);
         $this->cookie = $this->clean($_COOKIE);
         $this->files = $this->clean($_FILES);
+        $this->defPropertys();
     }
 
     /**
@@ -42,7 +50,8 @@ class Request
      * @param string $key
      * @return string
      */
-    public function get($key = '') {
+    public function get($key = '')
+    {
         if ($key != '')
             return isset($_GET[$key]) ? $this->clean($_GET[$key]) : null;
 
@@ -55,11 +64,17 @@ class Request
      * @param String $key
      * @return string
      */
-    public function post($key = '') {
+    public function post($key = '')
+    {
         if ($key != '')
             return isset($_POST[$key]) ? $this->clean($_POST[$key]) : null;
 
         return  $this->clean($_POST);
+    }
+
+    public function all()
+    {
+        return $this->request;
     }
 
     /**
@@ -68,7 +83,8 @@ class Request
      * @param String $key
      * @return string
      */
-    public function input($key = '') {
+    public function input($key = '')
+    {
         $postdata = file_get_contents("php://input");
         $request = json_decode($postdata, true);
 
@@ -85,7 +101,8 @@ class Request
      * @param string $key
      * @return array|string
      */
-    public function server($key = '') {
+    public function server($key = '')
+    {
         if(empty($key))
             return (array) $this->clean($_SERVER);
 
@@ -109,18 +126,29 @@ class Request
      *
      * @return string
      */
-    public function getClientIp() {
+    public function getClientIp()
+    {
         return (string) $this->server('REMOTE_ADDR');
     }
 
     /**
-     *  Script Name
+     *  get params of $GLOBAL
+     *
+     * @return string
+     */
+    public function getParams()
+    {
+        return $this->server('QUERY_STRING');
+    }
+
+    /**
+     *  get path of $GLOBAL
      *
      * @return string
      */
     public function getUrl()
     {
-        return $this->server('QUERY_STRING');
+        return $this->server('PATH_INFO');
     }
 
     /**
@@ -129,7 +157,8 @@ class Request
      * @param $data
      * @return string
      */
-    private function clean($data) {
+    private function clean($data)
+    {
         if (is_array($data)) {
             foreach ($data as $key => $value) {
 
@@ -146,11 +175,11 @@ class Request
         return $data;
     }
 
-    public function setMiddleware($name, $middleware)
+    private function defPropertys()
     {
-        if(class_exists($middleware))
-            $this->middlewares[$name] = new $middleware();
-
-        return $this;
+        if(!empty($this->request))
+            foreach ($this->request as $key => $value)
+                if(!array_key_exists($key, get_object_vars($this)))
+                    $this->$key = $value;
     }
 }

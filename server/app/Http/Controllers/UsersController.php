@@ -14,20 +14,29 @@ class UsersController extends Controller
 
     }
 
-    public function show(Request $request)
+    public function show($id)
     {
-        return response()->toJson($request->auth()->user());
+        $data = ['user' => 'show', $id];
+        return response()->toJson($data);
+        //return response()->toJson($request->auth()->user());
     }
 
-    public function create(Request $request)
+    public function check()
     {
-        if(!$request->isValid('users.create'))
+        $data = ['user' => 'check'];
+        return response()->toJson($data);
+    }
+
+    public function create()
+    {
+        if(!$this->request->isValid('users.create'))
+            return response()->status(412)->sendMessage(request()->errors());
 
         $user = new User();
         $user->id();
-        $user->name     = $request->get('name');
-        $user->email    = $request->get('email');
-        $user->img      = $request->files;
+        $user->name     = request()->name;
+        $user->email    = request()->email;
+        $user->img      = request()->img;
         $user->save();
 
         return response()->status(201)->toJson(['msg' => 'Sucesso']);

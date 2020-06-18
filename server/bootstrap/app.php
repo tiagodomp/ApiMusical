@@ -16,7 +16,7 @@ $request = new Lib\Http\Request();
 $response = new Lib\Http\Response();
 
 // set request url and method
-$router = new Router('/' . $request->getUrl(), $request->getMethod());
+$router = new Router($request->getUrl(), $request->getMethod());
 
 // import router file
 require '../routes/api.php';

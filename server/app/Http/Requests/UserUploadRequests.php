@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 
 use Lib\Http\FormRequestInterface;
 
-class UserCreateRequests implements FormRequestInterface
+class UserUploadRequests implements FormRequestInterface
 {
 
     public function authorize()
@@ -16,8 +16,8 @@ class UserCreateRequests implements FormRequestInterface
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'min:6'],
-            'email' => ['required', 'email'],
+            'name' => ['string', 'min:6'],
+            'email' => ['email'],
             'file' => ['string', 'min:5'],
         ];
     }

@@ -51,7 +51,6 @@ class Router
     public function __construct($url, $method) {
         $this->url                  = rtrim($url, '/');
         $this->method               = $method;
-        $this->params['request']    = request();
 
         //get response class of $GLOBALS var
         $this->response             = $GLOBALS['response'];
@@ -132,28 +131,25 @@ class Router
      *  dispatch url and pattern
      */
     public function dispatch($url, $pattern) {
-        preg_match_all('@:([\w]+)@', $pattern, $params, PREG_PATTERN_ORDER);
+        preg_match_all('(\{[\w]+\})', $pattern, $params, PREG_PATTERN_ORDER);
 
-        $patternAsRegex = preg_replace_callback('@:([\w]+)@', [$this, 'convertPatternToRegex'], $pattern);
+        $patternAsRegex = preg_replace_callback('(\{[\w]+\})', [$this, 'convertPatternToRegex'], $pattern);
 
         if (substr($pattern, -1) === '/' ) {
             $patternAsRegex = $patternAsRegex . '?';
         }
-        $patternAsRegex = '@^' . $patternAsRegex . '$@';
+        $patternAsRegex = '{^' . $patternAsRegex . '$}';
 
         // check match request url
         if (preg_match($patternAsRegex, $url, $paramsValue)) {
             array_shift($paramsValue);
             foreach ($params[0] as $key => $value) {
-                $val = substr($value, 1);
-                if ($paramsValue[$val]) {
+                $val = str_replace(['{', '}'], '', $value);
+                if ($paramsValue[$val])
                     $this->setParams($val, urlencode($paramsValue[$val]));
-                }
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -175,8 +171,9 @@ class Router
     /**
      * Convert Pattern To Regex
      */
-    private function convertPatternToRegex($matches) {
-        $key = str_replace(':', '', $matches[0]);
+    private function convertPatternToRegex($matches)
+    {
+        $key = str_replace(['{', '}'], '', $matches[0]);
         return '(?P<' . $key . '>[a-zA-Z0-9_\-\.\!\~\*\\\'\(\)\:\@\&\=\$\+,%]+)';
     }
 
@@ -237,8 +234,8 @@ class Router
     }
 
     private function sendNotFound() {
-        $this->response->sendStatus(404);
-        $this->response->setContent(['error' => 'Esta rota não foi encontrada!', 'status_code' => 404]);
+        $this->response->status(404)
+                        ->sendMessage('Esta rota não foi encontrada!');
         return $this;
     }
 }

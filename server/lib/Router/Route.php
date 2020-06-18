@@ -34,6 +34,13 @@ final class Route
     private $list_method = ['GET', 'POST', 'PUT', 'DELETE', 'OPTION'];
 
     /**
+     * middlewares of route
+     *
+     * @var array
+     */
+    private $middleware;
+
+    /**
      *  construct function
      */
     public function __construct($method, $pattern, $callback) {
@@ -46,7 +53,7 @@ final class Route
      *  check valid method
      */
     private function validateMethod($method) {
-        if (in_array(strtoupper($method), $this->list_method) && $method == $_SERVER['REQUEST_METHOD'])
+        if (in_array(strtoupper($method), $this->list_method))
             return (string) $method;
 
         throw new \Exception('Método inválido');
@@ -71,5 +78,13 @@ final class Route
      */
     public function getCallback() {
         return $this->callback;
+    }
+
+    /**
+     * define the middleware of route
+     */
+    public function setMiddleware($name, $class) {
+        if(is_callable($class))
+            $this->middleware[$name] = $class;
     }
 }

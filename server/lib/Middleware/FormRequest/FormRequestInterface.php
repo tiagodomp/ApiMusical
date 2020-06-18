@@ -1,7 +1,6 @@
 <?php
 
-
-namespace Lib\Http;
+namespace Lib\Middleware\FormRequest;
 
 interface FormRequestInterface
 {
